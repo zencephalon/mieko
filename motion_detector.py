@@ -13,24 +13,19 @@ import numpy as np
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-# ap.add_argument("-v", "--video", help="path to the video file")
+ap.add_argument("-v", "--video", help="path to the video stream")
 ap.add_argument("-a", "--min-area", type=int, default=500, help="minimum area size")
 args = vars(ap.parse_args())
 
 # # if the video argument is None, then we are reading from webcam
-# if args.get("video", None) is None:
-# 	camera = cv2.VideoCapture(0)
-# 	time.sleep(0.25)
+if args.get("video", None) is None:
+	print "--video parameter required"
+	exit()
 
-# otherwise, we are reading from a video file
-# else:
-	# camera = cv2.VideoCapture(args["video"])
-
-# camera = cv2.VideoCapture("http://localhost:8090/cam2.mjpeg")
 # initialize the first frame in the video stream
 firstFrame = None
 
-stream = urllib.urlopen('http://localhost:8090/cam2.mjpeg')
+stream = urllib.urlopen(args["video"])
 bytes = ''
 
 # loop over the frames of the video

@@ -30,24 +30,15 @@ bytes = ''
 
 # loop over the frames of the video
 while True:
-	# grab the current frame and initialize the occupied/unoccupied
-	# text
-
 	# Hacky code for manually decoding mjpeg stream
 	bytes += stream.read(1024)
-	a = bytes.find('\xff\xd8')
-	b = bytes.find('\xff\xd9')
+	a, b = bytes.find('\xff\xd8'), bytes.find('\xff\xd9')
 	if a != -1 and b != -1:
 		jpg = bytes[a:b+2]
 		bytes = bytes[b+2:]
 		frame = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), cv2.CV_LOAD_IMAGE_COLOR)
 
-		text = "Unoccupied"
-
-		# if the frame could not be grabbed, then we have reached the end
-		# of the video
-		# if not grabbed:
-		# 	break
+		occupied = False
 
 		# resize the frame, convert it to grayscale, and blur it
 		frame = imutils.resize(frame, width=500)
@@ -80,10 +71,10 @@ while True:
 			# and update the text
 			(x, y, w, h) = cv2.boundingRect(c)
 			cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-			text = "Occupied"
+			occupied = True
 
 		# draw the text and timestamp on the frame
-		cv2.putText(frame, "Room Status: {}".format(text), (10, 20),
+		cv2.putText(frame, "Room Status: {}".format(occupied), (10, 20),
 			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 150, 0), 2)
 		cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"),
 			(10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (255, 150, 0), 1)

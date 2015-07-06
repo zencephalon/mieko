@@ -38,7 +38,7 @@ while True:
 		bytes = bytes[b+2:]
 		frame = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), cv2.CV_LOAD_IMAGE_COLOR)
 
-		occupied = False
+		motion = False
 
 		# resize the frame, convert it to grayscale, and blur it
 		frame = imutils.resize(frame, width=500)
@@ -71,11 +71,11 @@ while True:
 			# and update the text
 			(x, y, w, h) = cv2.boundingRect(c)
 			cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-			occupied = True
+			motion = True
 
 		# draw the text and timestamp on the frame
-		cv2.putText(frame, "Room Status: {}".format(occupied), (10, 20),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.5, ((0, 0, 255), (255, 150, 0))[occupied], 2)
+		cv2.putText(frame, "Motion: {}".format(motion), (10, 20),
+			cv2.FONT_HERSHEY_SIMPLEX, 0.5, ((255, 150, 0), (0, 0, 255))[motion], 2)
 		cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"),
 			(10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (255, 150, 0), 1)
 
